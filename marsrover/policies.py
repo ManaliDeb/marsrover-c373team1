@@ -1,4 +1,5 @@
 # strategy objects (movement policies)
+from __future__ import annotations
 from .domain import Position, Plateau, forward_xy
 
 class BoundedMovement:
