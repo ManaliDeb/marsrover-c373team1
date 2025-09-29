@@ -20,5 +20,15 @@ class Move:
     def apply(self, pos: Position) -> Position:
         # policy consumes plateau via closure later (controller binds it)
         raise RuntimeError("Bind plateau before using")
-
+    
+def command_factory(movement_policy, plateau):
+    class _MoveBound:
+        def apply(self, pos: Position) -> Position:
+            return movement_policy.step(pos, plateau)
+    mapping: Dict[str, Command] = {
+        "L": TurnLeft(),
+        "R": TurnRight(),
+        "M": _MoveBound(),
+    }
+    return mapping
 
