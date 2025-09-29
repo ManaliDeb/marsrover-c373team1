@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Protocol, Tuple
+from typing import Protocol, Tuple, Optional
 
 class Heading(str, Enum):
     N = "N"; E = "E"; S = "S"; W = "W"
@@ -30,3 +30,18 @@ class MovementPolicy(Protocol):
 def turn_left(h: Heading) -> Heading:  return LEFT[h]
 def turn_right(h: Heading) -> Heading: return RIGHT[h]
 def forward_xy(h: Heading) -> Tuple[int, int]: return DELTA[h]
+
+class IgnoreOutOfBoundsPolicy:
+
+    def step(self, pos: Position, plateau: Plateau) -> Position:
+        dx, dy = forward_xy(pos.heading)
+        nx, ny = pos.x + dx, pos.y + dy
+
+        if plateau.in_bounds(nx, ny):
+            return Position(nx, ny, pos.heading)
+        return pos
+
+def apply_forward(pos: Position, plateau: Plateau, policy: Optional[MovementPolicy] = None) -> Position:
+
+    policy = policy or IgnoreOutOfBoundsPolicy()
+    return policy.step(pos, plateau)
