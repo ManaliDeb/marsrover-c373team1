@@ -1,3 +1,4 @@
+# orchestration (Mission), DI entrypoints
 from typing import Iterable, List
 from .domain import Plateau, Position
 from .parsing import parse_plateau, parse_position, parse_commands

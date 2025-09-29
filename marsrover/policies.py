@@ -1,3 +1,4 @@
+# strategy objects (movement policies)
 from .domain import Position, Plateau, forward_xy
 
 class BoundedMovement:

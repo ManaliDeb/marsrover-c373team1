@@ -1,3 +1,4 @@
+# pure-parsing no I/O beyond strings
 from .domain import Plateau, Position, Heading
 
 def parse_plateau(s: str) -> Plateau:
