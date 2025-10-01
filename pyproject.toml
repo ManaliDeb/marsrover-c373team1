@@ -10,3 +10,6 @@ addopts = "-q"
 [tool.coverage.run]
 branch = true
 source = ["marsrover"]
+
+[tool.setuptools.packages.find]
+include = ["marsrover"]
