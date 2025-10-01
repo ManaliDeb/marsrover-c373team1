@@ -40,6 +40,3 @@ Run tests with:
 ```bash
 pytest
 ```
-
-## License
-MIT
