@@ -1,4 +1,5 @@
 # Mars Rover Kata – Team 1
+### Manali Deb, Gianna Dubinski, Celeste Gonzalez
 
 ## Overview
 This project implements the Mars Rover kata in Python, supporting both command-line and web-based demos.
