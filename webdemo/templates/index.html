@@ -39,9 +39,15 @@ MMRMMRMRRM</textarea><br>
             body: JSON.stringify({ input })
         });
         const data = await res.json();
-        outputDiv.textContent = data.output.join('\n');
-        // Simple visualization: just plot final rover positions
-        drawPlateau(input, data.output);
+        if (data.error) {
+            outputDiv.textContent = 'Error: ' + data.error;
+        } else if (data.output) {
+            outputDiv.textContent = data.output.join('\n');
+            // Simple visualization: just plot final rover positions
+            drawPlateau(input, data.output);
+        } else {
+            outputDiv.textContent = 'Unknown error.';
+        }
     };
 
     function drawPlateau(input, output) {

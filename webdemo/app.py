@@ -14,8 +14,11 @@ def rover_api():
     data = request.json
     input_lines = data.get('input', '').splitlines()
     mission = Mission()
-    output = list(mission.run_io_lines(input_lines))
-    return jsonify({'output': output})
+    try:
+        output = list(mission.run_io_lines(input_lines))
+        return jsonify({'output': output})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
