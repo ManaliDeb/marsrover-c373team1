@@ -1,5 +1,8 @@
  # ADR 1: Use Python as Implementation Language
 
+ ## Status
+Accepted
+
 ## Context
 We need to select a programming language for implementing the Mars Rover kata. The project requires:
 

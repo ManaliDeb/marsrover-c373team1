@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mars Rover Web Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        #plateau { border: 1px solid #333; background: #f8f8f8; margin-top: 1em; }
+        #output { margin-top: 1em; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Mars Rover Web Demo</h1>
+    <form id="rover-form">
+        <label for="input">Input (same format as CLI):</label><br>
+        <textarea id="input" rows="8" cols="50">5 5
+1 2 N
+LMLMLMLMM
+3 3 E
+MMRMMRMRRM</textarea><br>
+        <button type="submit">Run</button>
+    </form>
+    <div id="output"></div>
+    <canvas id="plateau" width="400" height="400"></canvas>
+    <script>
+    const form = document.getElementById('rover-form');
+    const outputDiv = document.getElementById('output');
+    const canvas = document.getElementById('plateau');
+    const ctx = canvas.getContext('2d');
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        outputDiv.textContent = 'Running...';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const input = document.getElementById('input').value;
+        const res = await fetch('/api/rover', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input })
+        });
+        const data = await res.json();
+        outputDiv.textContent = data.output.join('\n');
+        // Simple visualization: just plot final rover positions
+        drawPlateau(input, data.output);
+    };
+
+    function drawPlateau(input, output) {
+        // Parse plateau size
+        const lines = input.trim().split(/\r?\n/);
+        const [maxX, maxY] = lines[0].split(' ').map(Number);
+        const cellSize = Math.min(canvas.width / (maxX+1), canvas.height / (maxY+1));
+        // Draw grid
+        ctx.strokeStyle = '#aaa';
+        for (let x = 0; x <= maxX; x++) {
+            ctx.beginPath();
+            ctx.moveTo(x*cellSize, 0);
+            ctx.lineTo(x*cellSize, (maxY+1)*cellSize);
+            ctx.stroke();
+        }
+        for (let y = 0; y <= maxY; y++) {
+            ctx.beginPath();
+            ctx.moveTo(0, y*cellSize);
+            ctx.lineTo((maxX+1)*cellSize, y*cellSize);
+            ctx.stroke();
+        }
+        // Draw rovers
+        output.forEach(line => {
+            const m = line.match(/(\d+) (\d+) ([NESW])/);
+            if (m) {
+                const [_, x, y, h] = m;
+                ctx.fillStyle = 'red';
+                ctx.beginPath();
+                ctx.arc(x*cellSize+cellSize/2, (maxY-y)*cellSize+cellSize/2, cellSize/3, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.fillStyle = 'black';
+                ctx.fillText(h, x*cellSize+cellSize/2-4, (maxY-y)*cellSize+cellSize/2+4);
+            }
+        });
+    }
+    </script>
+</body>
+</html>
